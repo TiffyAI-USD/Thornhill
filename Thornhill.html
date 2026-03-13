@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUGARLOAF'S PREMIUM POS</title>
+    <style>
+        :root {
+            --primary: #d4a373;
+            --bg: #000000;
+            --surface: #121212;
+            --surface-light: #1e1e1e;
+            --accent: #44ff44;
+            --danger: #ff4444;
+            --warning: #ff9800;
+            --gold-grad: linear-gradient(145deg, #d4a373, #b38b59, #8a6d4b);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            margin: 0; 
+            padding: 8px; 
+            overflow-x: hidden;
+        }
+
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 9999; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .login-box { background: var(--surface); padding: 30px; border-radius: 15px; border: 2px solid var(--primary); width: 85%; max-width: 320px; text-align: center; }
+        .pin-display { font-size: 2.5rem; letter-spacing: 12px; margin-bottom: 25px; color: var(--primary); font-weight: 900; background: #000; padding: 10px; border-radius: 8px; min-height: 50px; }
+
+        h1 { text-align: center; color: var(--primary); font-size: 1.4rem; letter-spacing: 2px; text-transform: uppercase; margin: 10px 0; font-weight: 900; }
+        h3 { color: var(--primary); margin: 0; font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
+
+        input, button, select { 
+            font-size: 0.9rem; 
+            padding: 12px; 
+            margin: 4px 0; 
+            width: 100%; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            border: 1px solid #333; 
+            font-weight: 800;
+        }
+
+        button { 
+            background: var(--gold-grad) !important; 
+            color: #000 !important; 
+            border: none !important; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-weight: 900; 
+        }
+        
+        button:active { transform: scale(0.96); opacity: 0.8; }
+        
+        .grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .tab-content { display: none; margin-top: 10px; animation: fadeIn 0.3s ease; }
+        .active-tab { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .category-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); 
+            gap: 6px; 
+            background: var(--surface); 
+            padding: 8px; 
+            border-radius: 10px; 
+            border: 1px solid #222;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .product-btn { 
+            position: relative; 
+            min-height: 65px; 
+            font-size: 0.75rem; 
+            color: #000 !important; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            border-radius: 6px; 
+            font-weight: 900;
+            padding: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            background: var(--gold-grad);
+            border-bottom: 3px solid #8a6d4b;
+        }
+
+        .food-btn, .drink-btn { background: var(--gold-grad); }
+        .btn-del-x { display: none; }
+
+        #trans-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 4px 0; }
+        .tab-btn { width: auto; padding: 8px 16px; background: #222 !important; color: #777 !important; white-space: nowrap; border: 1px solid #333 !important; font-size: 0.8rem; }
+        .tab-btn.active { background: var(--gold-grad) !important; color: #000 !important; border-color: #fff !important; }
+
+        #cart-list { background: var(--surface); border-radius: 8px; padding: 8px; margin: 8px 0; max-height: 200px; overflow-y: auto; border: 1px solid #222; }
+        .cart-row { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 6px 0; align-items: center; font-size: 0.85rem; font-weight: 700; }
+        #total-view { font-size: 2.5rem; color: var(--accent); text-align: center; margin: 5px 0; font-family: monospace; font-weight: 900; }
+
+        .stock-row { display: grid; grid-template-columns: 35px 1.5fr 0.8fr 0.8fr 100px; align-items: center; background: var(--surface); margin-bottom: 4px; padding: 6px; border-radius: 6px; gap: 4px; border: 1px solid #222; font-size: 0.8rem; text-align: center; font-weight: 700; }
+        .stock-status-good { color: var(--accent); }
+        .stock-status-low { color: var(--danger); font-weight: 900; animation: pulse 1.2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; padding: 20px; border-radius: 12px; width: 85%; max-width: 350px; z-index: 1000; border: 2px solid var(--primary); display: none; }
+        
+        .stock-footer { background: var(--surface-light); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px dashed var(--primary); text-align: center; font-weight: 800; line-height: 1.6; }
+        
+        .btn-small { padding: 6px; font-size: 0.7rem; border-radius: 4px; width: auto; }
+
+        .distro-box { background: var(--surface-light); border: 2px solid var(--warning); padding: 15px; border-radius: 10px; margin-top: 15px; }
+        
+        .ing-grid { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 4px; margin-bottom: 4px; }
+        
+        .search-container { margin: 10px 0; position: relative; }
+        #stock-search { background: #000; color: var(--primary); border: 1px solid var(--primary); padding-left: 35px; text-transform: uppercase; }
+        .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); pointer-events: none; }
+
+        .staff-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 8px; 
+            margin-top: 15px; 
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="snd-click" src="click.wav"></audio>
+    <audio id="snd-sparkle" src="sparcle.wav"></audio>
+    <audio id="snd-eat" src="eat.wav"></audio>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h1>STAFF LOGIN</h1>
+            <div id="pin-screen" class="pin-display">****</div>
+            <div class="grid-main" style="grid-template-columns: 1fr 1fr 1fr;">
+                <button onclick="pP(1)">1</button><button onclick="pP(2)">2</button><button onclick="pP(3)">3</button>
+                <button onclick="pP(4)">4</button><button onclick="pP(5)">5</button><button onclick="pP(6)">6</button>
+                <button onclick="pP(7)">7</button><button onclick="pP(8)">8</button><button onclick="pP(9)">9</button>
+                <button onclick="cP()" style="background:var(--danger)!important; color:#fff!important;">C</button>
+                <button onclick="pP(0)">0</button>
+                <button onclick="login()" style="background:var(--accent)!important;">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-body" style="display:none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin: 0;">Thornhill</h1>
+            <div style="display: flex; gap: 5px;">
+                <button onclick="manualSync()" style="width: auto; padding: 5px 10px; font-size: 0.6rem; background: #222 !important; color: var(--accent) !important;">SYNC ☁️</button>
+                <button onclick="printUserSales()" style="width: auto; padding: 5px 10px; font-size: 0.7rem;">CASH UP</button>
+                <button onclick="logout()" style="width: auto; padding: 5px 10px; background: #333!important; color: #fff!important;">LOCK</button>
+            </div>
+        </div>
+        <p id="staff-tag" style="text-align:center; color: var(--primary); font-weight: 900; margin: 5px 0;"></p>
+
+        <div class="grid-main">
+            <button onclick="switchTab('pos-tab')">Sales</button>
+            <button onclick="secureSwitch('menu-tab')">Builder</button>
+            <button onclick="secureSwitch('stock-tab')">Stock</button>
+            <button onclick="secureSwitch('report-tab')">Reports</button>
+        </div>
+
+        <div id="pos-tab" class="tab-content active-tab">
+            <div id="trans-tabs"></div>
+            <button onclick="createNewTransaction()" style="padding: 10px; margin-bottom: 5px; font-size: 1rem;">+ NEW TABLE</button>
+            <div class="grid-main">
+                <div class="category-grid" id="foodGrid"></div>
+                <div class="category-grid" id="drinkGrid"></div>
+            </div>
+            <div id="cart-list"></div>
+            <div id="total-view">R 0.00</div>
+            <div class="grid-main">
+                <button onclick="openTender()" style="height:60px; font-size: 1.2rem;">TENDER</button>
+                <button onclick="printKitchenSlip()">Kitchen Slip</button>
+                <button onclick="markAsWastage()" style="background:transparent !important; border:1px solid var(--warning) !important; color:var(--warning) !important; font-size:0.75rem;">Record Wastage</button>
+                <button onclick="adminVoid()" style="background:transparent !important; border:1px solid var(--danger) !important; color:var(--danger) !important;">Void Table</button>
+            </div>
+            <button onclick="openStaffSaleModal()" style="margin-top: 10px; height: 50px; background: #555 !important; color: #fff !important; border: 2px solid var(--primary) !important;">STAFF SALE / TAB</button>
+        </div>
+
+        <div id="menu-tab" class="tab-content">
+            <div style="background:var(--surface); padding:15px; border-radius:10px;">
+                <h3>Product Builder</h3>
+                <input type="text" id="m-name" placeholder="ITEM NAME">
+                <div class="grid-main">
+                    <input type="number" id="m-price" placeholder="Sell Price (R)">
+                    <input type="number" id="m-cost" placeholder="Item Direct Cost (R)">
+                </div>
+                <select id="m-cat"><option value="food">Food Item</option><option value="drink">Drink Item</option></select>
+                <p style="font-size: 0.7rem; color: var(--primary); margin: 10px 0 5px 0;">INGREDIENTS (NAME | QTY | UNIT COST)</p>
+                <div id="ing-rows"><div class="ing-grid"><input type="text" class="i-name" placeholder="Ingredient"><input type="number" class="i-qty" placeholder="Qty"><input type="number" class="i-cost" placeholder="Cost"></div></div>
+                <button onclick="addIngRow()" class="btn-small" style="margin: 10px 0;">+ Add Ingredient</button>
+                <button onclick="saveNewProduct()" style="margin-top:10px; font-size: 1rem;">SAVE PRODUCT</button>
+            </div>
+        </div>
+
+        <div id="stock-tab" class="tab-content">
+            <div class="distro-box" style="border: 2px solid var(--primary);">
+                <h3>ADDITIONAL PURCHASES</h3>
+                <input type="text" id="pur-name" placeholder="ITEM NAME">
+                <input type="number" id="pur-qty" placeholder="QUANTITY">
+                <input type="number" id="pur-cost" placeholder="TOTAL COST (R)">
+                <input type="text" id="pur-cat" placeholder="CATEGORY (e.g. Seafood, Bread)">
+                <button onclick="logPurchase()" style="background:var(--accent)!important;">RECORD & ADD TO STOCK</button>
+            </div>
+            <div style="background:var(--surface); padding:8px; border-radius:10px; margin-top:10px;">
+                <div style="display:flex; gap:8px;">
+                    <button onclick="printSelectedStock()">Print Order List</button>
+                    <button onclick="printPurchaseReport()" style="background:var(--warning)!important;">PRINT PURCHASE REPORT</button>
+                    <button onclick="selectAll(true)" class="btn-small">Select All</button>
+                    <button onclick="selectAll(false)" class="btn-small">None</button>
+                </div>
+                
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="stock-search" placeholder="SEARCH STOCK ITEMS..." oninput="renderStock()">
+                </div>
+
+                <button onclick="printFullValuationReport()" style="margin-top:8px;">Print Valuation PDF</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 35px 1.5fr 0.8fr 0.8fr 100px; padding: 5px; font-weight: 900; color: var(--primary); font-size: 0.6rem; text-align: center;"><span>PICK</span><span>ITEM</span><span>STOCK</span><span>PROFIT</span><span>ACTION</span></div>
+            <div id="inventory-display" style="max-height:300px; overflow-y:auto;"></div>
+            <div class="stock-footer" id="stock-summary"></div>
+            <div class="distro-box"><h3>Stock Distribution</h3><input type="text" id="distro-to" placeholder="DESTINATION BRANCH"><input type="number" id="distro-amt" placeholder="QTY TO SEND"><button onclick="processDistro()" style="margin-top:5px;">Process Transfer</button></div>
+        </div>
+
+        <div id="report-tab" class="tab-content">
+            <div style="background:var(--surface); padding:15px; border-radius:10px;">
+                <h3>Z-Reports & Profit</h3>
+                <div style="display:grid; gap:10px; margin-top:10px;">
+                    <button onclick="generateReport('daily')">Daily Report</button>
+                    <button onclick="generateReport('weekly')">Weekly Report</button>
+                    <button onclick="generateReport('monthly')">Monthly Report</button>
+                </div>
+                <hr style="margin:20px 0; border:1px solid #333;">
+                <h3>Staff Reports</h3>
+                <div style="display:grid; gap:10px; margin-top:10px;">
+                    <button onclick="printStaffReport('all')" style="background:var(--warning) !important;">PRINT MASTER STAFF REPORT</button>
+                    <select id="individual-staff-select" style="margin-top:5px;"></select>
+                    <button onclick="printStaffReport(document.getElementById('individual-staff-select').value)">PRINT INDIVIDUAL REPORT</button>
+                    <button onclick="clearStaffSales()" style="background:var(--danger) !important; color:#fff !important; font-size:0.7rem;">RESET STAFF MONTHLY TABS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stock-modal" class="modal"><h2 id="stock-item-name" style="color:var(--primary); text-align:center;"></h2><input type="number" id="stock-add-amt" placeholder="Amount to Add"><button onclick="confirmStockAdd()">Add to Stock</button><button onclick="closeModal()" style="margin-top:8px;">Cancel</button></div>
+    
+    <div id="tender-modal" class="modal">
+        <h1 id="cash-total-needed" style="text-align:center; color:var(--accent);"></h1>
+        <input type="number" id="tender-amt" placeholder="Amount Received" oninput="calculateDifference()" autofocus>
+        <h2 id="diff-display" style="text-align:center; font-weight: 900;">Change: R0.00</h2>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+            <button onclick="finalizeSale('Cash')" style="height: 50px;">CASH</button>
+            <button onclick="finalizeSale('Card')" style="height: 50px;">CARD</button>
+        </div>
+        <button onclick="closeModal()" style="margin-top:8px;">Back</button>
+    </div>
+
+    <div id="staff-sale-modal" class="modal">
+        <h2 style="color:var(--primary); text-align:center;">SELECT STAFF NAME</h2>
+        <div id="staff-name-grid" class="staff-grid"></div>
+        <button onclick="closeModal()" style="margin-top:15px; background:#333 !important; color:#fff !important;">CANCEL</button>
+    </div>
+
+    <script>
+        // --- CLOUD SYNC LOGIC ---
+        const GH_REPO = "tiffyai-usd/Thornhill";
+        const GH_PATH = "POS-data3.json";
+
+        function getGHToken() {
+            let t = localStorage.getItem('gh_token');
+            if(!t || t === "null") { t = prompt("ENTER GITHUB SYNC TOKEN:"); if(t) localStorage.setItem('gh_token', t); }
+            return t;
+        }
+
+        async function syncToCloud() {
+            const token = getGHToken();
+            if(!token) return;
+            const dataToSync = { inventory, recipes, transactions, purchaseLog, staffSales, lastSync: new Date().toISOString() };
+            try {
+                const getRes = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_PATH}`, { headers: { "Authorization": `token ${token}` } });
+                const fileInfo = await getRes.json();
+                await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_PATH}`, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "POS Auto-Sync", content: btoa(unescape(encodeURIComponent(JSON.stringify(dataToSync, null, 2)))), sha: fileInfo.sha })
+                });
+            } catch(e) { console.error("Sync Error:", e); }
+        }
+
+        async function pullFromCloud() {
+            const token = getGHToken();
+            if(!token) return;
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/${GH_PATH}?nocache=${Date.now()}`, { headers: { "Authorization": `token ${token}` } });
+                if(!res.ok) return;
+                const fileInfo = await res.json();
+                const cloud = JSON.parse(atob(fileInfo.content));
+                
+                // SAFETY CHECK: Only overwrite if cloud data is newer
+                const localLastSync = parseInt(localStorage.getItem('last_sync_time')) || 0;
+                const cloudLastSync = new Date(cloud.lastSync).getTime();
+
+                if (cloudLastSync > localLastSync) {
+                    if(cloud.inventory) inventory = cloud.inventory;
+                    if(cloud.recipes) recipes = cloud.recipes;
+                    if(cloud.transactions) transactions = cloud.transactions;
+                    if(cloud.purchaseLog) purchaseLog = cloud.purchaseLog;
+                    if(cloud.staffSales) staffSales = cloud.staffSales;
+                    localStorage.setItem('pos_inv', JSON.stringify(inventory));
+                    localStorage.setItem('pos_rec', JSON.stringify(recipes));
+                    localStorage.setItem('pos_trans', JSON.stringify(transactions));
+                    localStorage.setItem('pos_purchases', JSON.stringify(purchaseLog));
+                    localStorage.setItem('pos_staff_sales', JSON.stringify(staffSales));
+                    localStorage.setItem('last_sync_time', cloudLastSync);
+                    renderPOS(); renderStock(); updateValuation();
+                }
+            } catch(e) { console.error("Pull Error:", e); }
+        }
+
+        function manualSync() { syncToCloud().then(() => alert("Cloud Sync Complete ✅")); }
+        // -------------------------
+
+        function playSnd(id) {
+            const snd = document.getElementById(id);
+            if(snd) { snd.currentTime = 0; snd.play().catch(e => console.log("Audio play blocked")); }
+        }
+
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.onclick && btn.onclick.toString().includes('finalizeSale')) {
+                } else if (btn.closest('.modal')) {
+                    playSnd('snd-sparkle');
+                } else {
+                    playSnd('snd-click');
+                }
+            });
+        });
+
+        let pinStr = "";
+        let currentUser = "";
+        const ADMIN_PIN = "1010";
+        const STAFF_PINS = {"1010": "Sean", "7711": "Cats", "7777": "King Ron", "2266": "Local", "2255": "Jay", "2244": "Ben", "2233": "Lim", "2211": "Andisiwe", "1199": "Lungile", "1188": "Jon", "1177": "Megan", "1166": "Sweswe", "1155": "Siyamcela", "1144": "Luciano", "1133": "Tyran", "1122": "Sive", "2020": "Zuko", "1999": "Lee", "1992": "Jonice", "1234": "Beranise", "1111": "Momo", "2222": "Zet", "3333": "Marshall", "4444": "Hans", "2015": "Regan", "5555": "Don"};
+
+        function pP(n) { if(pinStr.length < 4) { pinStr += n; document.getElementById('pin-screen').textContent = "*".repeat(pinStr.length); } }
+        function cP() { pinStr = ""; document.getElementById('pin-screen').textContent = "****"; playSnd('snd-click'); }
+        function logout() { location.reload(); }
+        async function login() {
+            if(STAFF_PINS[pinStr]) {
+                currentUser = STAFF_PINS[pinStr];
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('app-body').style.display = 'block';
+                document.getElementById('staff-tag').textContent = "LOGGED IN: " + currentUser.toUpperCase();
+                playSnd('snd-sparkle');
+                await pullFromCloud();
+                startApp();
+            } else { alert("WRONG PIN"); cP(); }
+        }
+
+        let inventory = JSON.parse(localStorage.getItem('pos_inv')) || {};
+        let recipes = JSON.parse(localStorage.getItem('pos_rec')) || {};
+        let transactions = JSON.parse(localStorage.getItem('pos_trans')) || [];
+        let purchaseLog = JSON.parse(localStorage.getItem('pos_purchases')) || []; 
+        let staffSales = JSON.parse(localStorage.getItem('pos_staff_sales')) || {}; 
+        let currentTransIdx = -1;
+        let selectedStockKey = "";
+
+        function startApp() {
+            if (transactions.filter(t => t.status === 'active').length === 0) {
+                transactions.push({id: transactions.length + 1, items: [], status: 'active', date: new Date().getTime()});
+            }
+            currentTransIdx = transactions.findIndex(t => t.status === 'active');
+            populateStaffUI();
+            renderPOS(); renderStock(); updateValuation();
+        }
+
+        function save() {
+            const now = new Date().toISOString();
+            localStorage.setItem('last_sync_time', new Date(now).getTime());
+            localStorage.setItem('pos_inv', JSON.stringify(inventory));
+            localStorage.setItem('pos_rec', JSON.stringify(recipes));
+            localStorage.setItem('pos_trans', JSON.stringify(transactions));
+            localStorage.setItem('pos_purchases', JSON.stringify(purchaseLog));
+            localStorage.setItem('pos_staff_sales', JSON.stringify(staffSales));
+            updateValuation();
+            syncToCloud();
+        }
+
+        function populateStaffUI() {
+            const grid = document.getElementById('staff-name-grid');
+            const select = document.getElementById('individual-staff-select');
+            grid.innerHTML = '';
+            select.innerHTML = '';
+            
+            Object.values(STAFF_PINS).sort().forEach(name => {
+                grid.innerHTML += `<button onclick="finalizeStaffSale('${name}')">${name}</button>`;
+                select.innerHTML += `<option value="${name}">${name}</option>`;
+            });
+        }
+
+        function openStaffSaleModal() {
+            const t = transactions[currentTransIdx];
+            if (!t || t.items.length === 0) return alert("Add items to the cart first.");
+            document.getElementById('staff-sale-modal').style.display = 'block';
+            playSnd('snd-sparkle');
+        }
+
+        function finalizeStaffSale(staffName) {
+            const t = transactions[currentTransIdx];
+            if (!staffSales[staffName]) staffSales[staffName] = [];
+
+            t.items.forEach(it => {
+                staffSales[staffName].push({
+                    name: it.name,
+                    price: it.price,
+                    date: new Date().getTime()
+                });
+                if(inventory[it.code]) inventory[it.code].stock--; 
+                if(recipes[it.code]) { 
+                    for(let ing in recipes[it.code]) if(inventory[ing]) inventory[ing].stock -= recipes[it.code][ing]; 
+                }
+            });
+
+            alert(`Recorded to ${staffName}'s account.`);
+            playSnd('snd-eat');
+            save();
+            createNewTransaction();
+            closeModal();
+        }
+
+        function printStaffReport(filter) {
+            let win = window.open('', '', 'width=400,height=600');
+            let content = `<h2>STAFF CREDIT REPORT</h2><p>Date: ${new Date().toLocaleDateString()}</p><hr>`;
+            
+            if (filter === 'all') {
+                let grandTotal = 0;
+                for (let staff in staffSales) {
+                    let total = staffSales[staff].reduce((sum, item) => sum + item.price, 0);
+                    content += `<p><b>${staff}:</b> R${total.toFixed(2)}</p>`;
+                    grandTotal += total;
+                }
+                content += `<hr><h3>GRAND TOTAL: R${grandTotal.toFixed(2)}</h3>`;
+            } else {
+                if (!staffSales[filter] || staffSales[filter].length === 0) {
+                    content += `<p>No sales recorded for ${filter}.</p>`;
+                } else {
+                    content += `<h3>Staff: ${filter}</h3><ul>`;
+                    let total = 0;
+                    staffSales[filter].forEach(s => {
+                        content += `<li>${s.name} - R${s.price.toFixed(2)} <small>(${new Date(s.date).toLocaleDateString()})</small></li>`;
+                        total += s.price;
+                    });
+                    content += `</ul><hr><h4>TOTAL DUE: R${total.toFixed(2)}</h4>`;
+                }
+            }
+            
+            win.document.write(`<html><body style="font-family:sans-serif; padding:20px;">${content}</body></html>`);
+            win.document.close();
+            win.print();
+        }
+
+        function clearStaffSales() {
+            const pin = prompt("ADMIN PIN TO CLEAR ALL STAFF TABS:");
+            if (pin === ADMIN_PIN) {
+                if(confirm("This will permanently delete all recorded staff sales for the month. Continue?")) {
+                    staffSales = {};
+                    save();
+                    playSnd('snd-sparkle');
+                    alert("Staff sales reset.");
+                }
+            } else { alert("UNAUTHORIZED"); }
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.getElementById(id).classList.add('active-tab');
+            if(id === 'pos-tab') renderPOS();
+            if(id === 'stock-tab') renderStock();
+        }
+
+        function secureSwitch(id) {
+            const pin = prompt("ADMIN PIN REQUIRED:");
+            if (pin === ADMIN_PIN) {
+                switchTab(id);
+                playSnd('snd-sparkle');
+            } else {
+                alert("UNAUTHORIZED");
+            }
+        }
+
+        function logPurchase() {
+            const name = document.getElementById('pur-name').value.toUpperCase();
+            const qty = parseFloat(document.getElementById('pur-qty').value);
+            const cost = parseFloat(document.getElementById('pur-cost').value);
+            const cat = document.getElementById('pur-cat').value || "General";
+            
+            if (!name || isNaN(qty) || isNaN(cost)) return alert("Required fields missing.");
+            
+            purchaseLog.push({ date: new Date().getTime(), name, qty, cost, cat });
+            
+            const key = name.replace(/\s+/g, '_').toUpperCase();
+            if (!inventory[key]) {
+                inventory[key] = { name, stock: qty, cost: cost/qty, price: 0, category: 'ingredient' };
+            } else {
+                inventory[key].stock += qty;
+                inventory[key].cost = cost/qty;
+            }
+            
+            save(); renderStock(); 
+            playSnd('snd-sparkle');
+            alert("Purchase recorded and stock updated.");
+            document.getElementById('pur-name').value = '';
+            document.getElementById('pur-qty').value = '';
+            document.getElementById('pur-cost').value = '';
+            document.getElementById('pur-cat').value = '';
+        }
+
+        function printPurchaseReport() {
+            let win = window.open('', '', 'width=400,height=600');
+            let rows = purchaseLog.map(p => `<tr><td>${new Date(p.date).toLocaleDateString()}</td><td>${p.name}</td><td>${p.qty}</td><td>R${p.cost.toFixed(2)}</td></tr>`).join('');
+            win.document.write(`<html><head><style>body{font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #333; padding:8px;}</style></head><body>
+                <h3>ADDITIONAL PURCHASE REPORT</h3>
+                <table><tr><th>Date</th><th>Item</th><th>Qty</th><th>Cost</th></tr>${rows}</table>
+            </body></html>`);
+            win.document.close(); win.print();
+        }
+
+        function updateValuation() {
+            let totalCostVal = 0; let totalRetailVal = 0;
+            Object.values(inventory).forEach(itm => {
+                if(itm.stock > 0) { 
+                    totalCostVal += (itm.stock * (itm.cost || 0)); 
+                    totalRetailVal += (itm.stock * (itm.price || 0)); 
+                }
+            });
+            const grossProfit = totalRetailVal - totalCostVal;
+            const summary = document.getElementById('stock-summary');
+            if(summary) { 
+                summary.innerHTML = `<div style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 8px;"><small>STOCK VALUE (COST)</small><br><span style="font-size:1.3rem; color:var(--primary);">R${totalCostVal.toFixed(2)}</span></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><div><small>POTENTIAL SALES</small><br><span style="font-size:1.1rem; color:var(--accent);">R${totalRetailVal.toFixed(2)}</span></div><div><small>EXPECTED PROFIT</small><br><span style="font-size:1.1rem; color:var(--warning);">R${grossProfit.toFixed(2)}</span></div></div>`; 
+            }
+            return { totalCostVal, totalRetailVal, grossProfit };
+        }
+
+        function printFullValuationReport() {
+            const pin = prompt("ADMIN PIN REQUIRED:");
+            if(pin !== ADMIN_PIN) return alert("UNAUTHORIZED");
+
+            const data = updateValuation(); 
+            let win = window.open('', '', 'width=800,height=900'); 
+            let rows = '';
+            
+            Object.keys(inventory).sort().forEach(key => {
+                const itm = inventory[key]; 
+                if(itm.stock > 0) {
+                    const rowCost = (itm.stock * (itm.cost || 0)).toFixed(2); 
+                    const rowRetail = (itm.stock * (itm.price || 0)).toFixed(2);
+                    rows += `<tr><td>${itm.name}</td><td>${itm.stock.toFixed(1)}</td><td>R${(itm.cost || 0).toFixed(2)}</td><td>R${rowCost}</td><td>R${rowRetail}</td></tr>`;
+                }
+            });
+
+            win.document.write(`<html><head><style>body{font-family:sans-serif;padding:20px;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#f2f2f2;}.summary-box{background:#f9f9f9;padding:15px;border:2px solid #333;margin-bottom:20px;}h1{color:#333;}</style></head><body><h1>PAPA RON'S STOCK VALUATION</h1><div class="summary-box"><h2>TOTAL SUMMARY</h2><p><strong>Total Stock Cost:</strong> R${data.totalCostVal.toFixed(2)}</p><p><strong>Total Potential Retail:</strong> R${data.totalRetailVal.toFixed(2)}</p><h3>Estimated Profit: R${data.grossProfit.toFixed(2)}</h3></div><table><thead><tr><th>Item Name</th><th>Qty on Hand</th><th>Unit Cost</th><th>Total Cost</th><th>Total Retail</th></tr></thead><tbody>${rows}</tbody></table><p style='margin-top:20px; font-size:0.8rem;'>Generated on: ${new Date().toLocaleString()}</p></body></html>`);
+            win.document.close(); 
+            setTimeout(() => { win.print(); }, 500);
+        }
+
+        function processDistro() {
+            const pin = prompt("ADMIN PIN REQUIRED FOR TRANSFER:");
+            if(pin !== ADMIN_PIN) return alert("UNAUTHORIZED");
+
+            const dest = document.getElementById('distro-to').value.toUpperCase(); 
+            const qty = parseFloat(document.getElementById('distro-amt').value); 
+            const checked = document.querySelectorAll('.stock-check:checked'); 
+            
+            if(!dest || isNaN(qty) || qty <= 0 || checked.length === 0) return alert("Please enter destination, qty, and select items.");
+            
+            let slip = `TRANSFER TO: ${dest}\nDATE: ${new Date().toLocaleString()}\nSTAFF: ${currentUser}\n----------------------------\n`;
+            let itemsProcessed = 0;
+
+            checked.forEach(cb => { 
+                const itm = inventory[cb.value]; 
+                if(itm.stock < qty) { 
+                    alert(`Insufficient stock for ${itm.name}! (Available: ${itm.stock})`); 
+                } else {
+                    itm.stock -= qty; 
+                    slip += `${qty.toFixed(1)} x ${itm.name}\n`; 
+                    itemsProcessed++;
+                }
+            });
+
+            if(itemsProcessed > 0) {
+                save(); renderStock(); 
+                playSnd('snd-sparkle');
+                const win = window.open('', '', 'width=350,height=500'); 
+                win.document.write(`<pre style="font-family:monospace;">${slip}\n----------------------------\nRecieved by: _______________</pre>`); 
+                win.document.close(); win.print();
+            }
+        }
+
+        function renderPOS() {
+            const f = document.getElementById('foodGrid'); const d = document.getElementById('drinkGrid');
+            f.innerHTML = ''; d.innerHTML = '';
+            Object.keys(inventory).forEach(key => {
+                if(inventory[key].category === 'ingredient') return;
+                const btn = document.createElement('div'); btn.className = `product-btn ${inventory[key].category}-btn`;
+                btn.innerHTML = `<div style="width:100%" onclick="addToCart('${key}')"><b>${inventory[key].name}</b><br>R${inventory[key].price.toFixed(2)}</div>`;
+                inventory[key].category === 'food' ? f.appendChild(btn) : d.appendChild(btn);
+            });
+            const tTabs = document.getElementById('trans-tabs'); tTabs.innerHTML = '';
+            transactions.forEach((t, i) => {
+                if(t.status !== 'active') return;
+                const btn = document.createElement('button'); btn.className = `tab-btn ${i === currentTransIdx ? 'active' : ''}`;
+                btn.textContent = `Table ${t.id}`; btn.onclick = () => { currentTransIdx = i; renderPOS(); playSnd('snd-click'); }; tTabs.appendChild(btn);
+            });
+            updateCartUI();
+        }
+
+        function addToCart(key) { if (currentTransIdx === -1) createNewTransaction(); transactions[currentTransIdx].items.push({...inventory[key], code: key}); save(); updateCartUI(); playSnd('snd-click'); }
+
+        function updateCartUI() {
+            const list = document.getElementById('cart-list'); list.innerHTML = ''; let total = 0;
+            if(transactions[currentTransIdx]) {
+                transactions[currentTransIdx].items.forEach((it, i) => {
+                    total += it.price;
+                    list.innerHTML += `<div class="cart-row"><span>${it.name}</span><span>R${it.price.toFixed(2)} <button onclick="removeFromCart(${i})" style="background:var(--danger) !important; border:none; color:white !important; border-radius:4px; padding:2px 8px; font-weight:bold;">×</button></span></div>`;
+                });
+            }
+            document.getElementById('total-view').textContent = `R ${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(i) { transactions[currentTransIdx].items.splice(i, 1); save(); updateCartUI(); playSnd('snd-click'); }
+
+        function renderStock() {
+            const cont = document.getElementById('inventory-display'); 
+            const searchInput = document.getElementById('stock-search');
+            const searchQuery = searchInput ? searchInput.value.toUpperCase() : "";
+            
+            cont.innerHTML = '';
+            
+            Object.keys(inventory).sort().forEach(key => {
+                const itm = inventory[key]; 
+                
+                if (searchQuery && !itm.name.toUpperCase().includes(searchQuery)) return;
+
+                const profit = (itm.price || 0) - (itm.cost || 0);
+                const stockClass = itm.stock <= 5 ? 'stock-status-low' : 'stock-status-good';
+                cont.innerHTML += `<div class="stock-row"><input type="checkbox" class="stock-check" value="${key}"><div style="text-align:left; line-height:1.1;"><b>${itm.name}</b><br><small style="color:#777;">Cost: R${(itm.cost||0).toFixed(2)}</small></div><div class="${stockClass}">${itm.stock.toFixed(1)}</div><div style="color:#aaa;">R${profit.toFixed(2)}</div><div style="display:flex; gap:3px; justify-content:center;"><button onclick="openStockIn('${key}')" class="btn-small">+In</button></div></div>`;
+            });
+            updateValuation();
+        }
+
+        function finalizeSale(method) {
+            const t = transactions[currentTransIdx]; if (!t || t.items.length === 0) return;
+            const total = t.items.reduce((s, i) => s + i.price, 0);
+            const received = parseFloat(document.getElementById('tender-amt').value) || total;
+            
+            t.total = total;
+            t.tip = (method === 'Card') ? Math.max(0, received - total) : 0;
+            t.method = method;
+            t.status = 'paid';
+            t.date = new Date().getTime();
+            t.staff = currentUser;
+            
+            t.items.forEach(it => {
+                if(inventory[it.code]) inventory[it.code].stock--; 
+                if(recipes[it.code]) { for(let ing in recipes[it.code]) if(inventory[ing]) inventory[ing].stock -= recipes[it.code][ing]; }
+            });
+            printReceipt(t); save(); createNewTransaction(); closeModal();
+            playSnd('snd-eat');
+        }
+
+        function markAsWastage() {
+            const t = transactions[currentTransIdx];
+            if (!t || t.items.length === 0) return alert("Select items that were wasted first.");
+
+            const reason = prompt("Enter Reason (e.g., Spillage, Expired, Staff Error):");
+            if (reason === null) return;
+
+            t.total = 0; 
+            t.method = 'Wastage';
+            t.status = 'paid';
+            t.date = new Date().getTime();
+            t.staff = currentUser;
+            t.notes = reason || "Unspecified Wastage";
+
+            t.items.forEach(it => {
+                if(inventory[it.code]) inventory[it.code].stock--; 
+                if(recipes[it.code]) { 
+                    for(let ing in recipes[it.code]) if(inventory[ing]) inventory[ing].stock -= recipes[it.code][ing]; 
+                }
+            });
+
+            printReceipt(t); save(); createNewTransaction(); 
+            playSnd('snd-sparkle');
+        }
+
+        function generateReport(range) {
+            const pin = prompt("ADMIN PIN REQUIRED:");
+            if(pin !== ADMIN_PIN) return alert("UNAUTHORIZED");
+
+            const now = new Date(); let startTime = 0;
+            if(range === 'daily') startTime = new Date(now.setHours(0,0,0,0)).getTime();
+            if(range === 'weekly') startTime = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+            if(range === 'monthly') startTime = now.getTime() - (30 * 24 * 60 * 60 * 1000);
+            const sales = transactions.filter(t => t.status === 'paid' && t.date >= startTime);
+            let totalSales = 0, totalTips = 0, totalCost = 0; 
+            let report = `${range.toUpperCase()} REPORT\n--------------------------\n`;
+            sales.forEach(s => { 
+                if(s.method !== 'Wastage') {
+                    report += `Table ${s.id}: R${s.total.toFixed(2)} (Tip: R${(s.tip||0).toFixed(2)}) [${s.staff || 'N/A'}]\n`; 
+                    totalSales += s.total; 
+                    totalTips += (s.tip||0);
+                } else {
+                    report += `WASTAGE Table ${s.id}: (R0.00) [${s.staff || 'N/A'}]\n`;
+                }
+                s.items.forEach(item => totalCost += (item.cost || 0)); 
+            });
+            report += `--------------------------\nTOTAL SALES: R${totalSales.toFixed(2)}\nTOTAL TIPS: R${totalTips.toFixed(2)}\nTOTAL COST: R${totalCost.toFixed(2)}\nPROFIT: R${(totalSales - totalCost).toFixed(2)}`;
+            const win = window.open('', '', 'width=350,height=600'); win.document.write(`<pre>${report}</pre>`); win.document.close(); win.print();
+            playSnd('snd-sparkle');
+        }
+
+        function printReceipt(t) {
+            let win = window.open('', '', 'width=300,height=600');
+            if(t.method === 'Wastage') {
+                win.document.write(`<pre>--- WASTAGE LOG ---\nStaff: ${t.staff}\nTable: ${t.id}\nReason: ${t.notes}\n----------------\n${t.items.map(i => i.name).join('\n')}\n----------------\nSTOCK ADJUSTED</pre>`);
+            } else {
+                let items = t.items.map(i => `${i.name.padEnd(15).slice(0,15)} R${i.price.toFixed(2)}`).join('\n');
+                win.document.write(`<pre>--- PAPA RON'S ---\nStaff: ${t.staff}\nTable: ${t.id}\n----------------\n${items}\n----------------\nSUBTOTAL: R${t.total.toFixed(2)}\nTIP: R${(t.tip||0).toFixed(2)}\nTOTAL: R${(t.total + (t.tip||0)).toFixed(2)}\nMETHOD: ${t.method}</pre>`);
+            }
+            win.document.close(); win.print();
+        }
+
+        function printKitchenSlip() {
+            const t = transactions[currentTransIdx]; if(!t || t.items.length === 0) return;
+            let win = window.open('', '', 'width=300,height=400');
+            let items = t.items.map(i => `[ ] ${i.name}`).join('\n');
+            win.document.write(`<pre style="font-size:16pt;">KITCHEN ORDER\nTable: ${t.id}\nStaff: ${currentUser}\n----------------\n${items}</pre>`);
+            win.document.close(); win.print();
+            playSnd('snd-click');
+        }
+
+        function printUserSales() {
+            const userSales = transactions.filter(t => t.status === 'paid' && t.staff === currentUser);
+            let cash = userSales.filter(s => s.method === 'Cash').reduce((s, t) => s + t.total, 0);
+            let card = userSales.filter(s => s.method === 'Card').reduce((s, t) => s + t.total, 0);
+            let tips = userSales.reduce((s, t) => s + (t.tip || 0), 0);
+            let win = window.open('', '', 'width=300,height=400');
+            win.document.write(`<pre>--- SHIFT CASH UP ---\nStaff: ${currentUser}\nDate: ${new Date().toLocaleDateString()}\n----------------\nCASH: R${cash.toFixed(2)}\nCARD: R${card.toFixed(2)}\nTIPS: R${tips.toFixed(2)}\n----------------\nTOTAL: R${(cash+card+tips).toFixed(2)}</pre>`);
+            win.document.close(); win.print();
+            playSnd('snd-sparkle');
+        }
+
+        function printSelectedStock() {
+            const supplier = prompt("Enter Supplier Name:"); if (!supplier) return;
+            let list = `STOCK ORDER: ${supplier}\nDate: ${new Date().toLocaleDateString()}\n----------------------------\n`;
+            let count = 0; document.querySelectorAll('.stock-check:checked').forEach(cb => { const item = inventory[cb.value]; list += `[ ] ${item.name.padEnd(15)} (Curr: ${item.stock.toFixed(1)})\n`; count++; });
+            if(count === 0) return alert("Select items first!");
+            const win = window.open('', '', 'width=400,height=600'); win.document.write(`<pre>${list}</pre>`); win.document.close(); win.print();
+            playSnd('snd-sparkle');
+        }
+
+        function createNewTransaction() { transactions.push({id: transactions.length + 1, items: [], status:'active', date: new Date().getTime()}); currentTransIdx = transactions.length - 1; renderPOS(); playSnd('snd-click'); }
+        
+        function openTender() { 
+            const total = transactions[currentTransIdx].items.reduce((s, i) => s + i.price, 0); 
+            if(total === 0) return; 
+            document.getElementById('cash-total-needed').textContent = `TOTAL: R${total.toFixed(2)}`; 
+            document.getElementById('tender-modal').style.display = 'block'; 
+            document.getElementById('tender-amt').value = ''; 
+            document.getElementById('diff-display').textContent = 'Change: R0.00'; 
+            document.getElementById('diff-display').style.color = 'var(--accent)';
+            playSnd('snd-sparkle');
+        }
+        
+        function calculateDifference() { 
+            const total = transactions[currentTransIdx].items.reduce((s, i) => s + i.price, 0); 
+            const received = parseFloat(document.getElementById('tender-amt').value) || 0; 
+            const diff = received - total; 
+            document.getElementById('diff-display').textContent = diff >= 0 ? `Change: R${diff.toFixed(2)}` : `Short: R${Math.abs(diff).toFixed(2)}`; 
+            document.getElementById('diff-display').style.color = diff >= 0 ? 'var(--accent)' : 'var(--danger)'; 
+        }
+
+        function addIngRow() { const div = document.createElement('div'); div.className = "ing-grid"; div.innerHTML = `<input type="text" class="i-name" placeholder="Ingredient"><input type="number" class="i-qty" placeholder="Qty"><input type="number" class="i-cost" placeholder="Cost">`; document.getElementById('ing-rows').appendChild(div); playSnd('snd-click'); }
+        
+        function saveNewProduct() {
+            const name = document.getElementById('m-name').value.toUpperCase(); const price = parseFloat(document.getElementById('m-price').value); const cost = parseFloat(document.getElementById('m-cost').value) || 0; const cat = document.getElementById('m-cat').value; if(!name || isNaN(price)) return alert("Required fields missing.");
+            const id = "P_" + Date.now(); let recipe = {}; const iNames = document.querySelectorAll('.i-name'), iQtys = document.querySelectorAll('.i-qty'), iCosts = document.querySelectorAll('.i-cost');
+            iNames.forEach((n, i) => { const iname = n.value.toUpperCase(), iqty = parseFloat(iQtys[i].value), icost = parseFloat(iCosts[i].value) || 0; if(iname && iqty) { recipe[iname] = iqty; if(!inventory[iname]) inventory[iname] = { name: iname, stock: 0, cost: icost, category: 'ingredient' }; else if(icost > 0) inventory[iname].cost = icost; } });
+            inventory[id] = { name, price, cost, category: cat, stock: 0 }; if(Object.keys(recipe).length > 0) recipes[id] = recipe; save(); location.reload();
+            playSnd('snd-sparkle');
+        }
+
+        function adminVoid() {
+            const pin = prompt("ENTER ADMIN PIN TO VOID:");
+            if(pin === ADMIN_PIN) {
+                transactions.splice(currentTransIdx, 1);
+                startApp();
+                playSnd('snd-sparkle');
+            } else {
+                alert("UNAUTHORIZED");
+            }
+        }
+
+        function openStockIn(k) { selectedStockKey = k; document.getElementById('stock-item-name').textContent = inventory[k].name; document.getElementById('stock-modal').style.display = 'block'; playSnd('snd-sparkle'); }
+        function confirmStockAdd() { const a = parseFloat(document.getElementById('stock-add-amt').value); if(a) { inventory[selectedStockKey].stock += a; save(); renderStock(); closeModal(); playSnd('snd-sparkle'); } }
+        function selectAll(v) { document.querySelectorAll('.stock-check').forEach(c => c.checked = v); playSnd('snd-click'); }
+        function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); playSnd('snd-click'); }
+    </script>
+</body>
+</html>
