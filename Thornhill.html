@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUGARLOAF'S PREMIUM POS</title>
+    <title>THORNHILL'S PREMIUM POS</title>
     <style>
         :root {
             --primary: #d4a373;
@@ -120,7 +120,7 @@
         .ing-grid { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 4px; margin-bottom: 4px; }
         
         .search-container { margin: 10px 0; position: relative; }
-        #stock-search { background: #000; color: var(--primary); border: 1px solid var(--primary); padding-left: 35px; text-transform: uppercase; }
+        #stock-search, #pos-search { background: #000; color: var(--primary); border: 1px solid var(--primary); padding-left: 35px; text-transform: uppercase; width: 100%; box-sizing: border-box;}
         .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); pointer-events: none; }
 
         .staff-grid { 
@@ -174,6 +174,12 @@
 
         <div id="pos-tab" class="tab-content active-tab">
             <div id="trans-tabs"></div>
+            
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="pos-search" placeholder="SEARCH PRODUCTS..." oninput="renderPOS()">
+            </div>
+
             <button onclick="createNewTransaction()" style="padding: 10px; margin-bottom: 5px; font-size: 1rem;">+ NEW TABLE</button>
             <div class="grid-main">
                 <div class="category-grid" id="foodGrid"></div>
@@ -310,7 +316,6 @@
                 const fileInfo = await res.json();
                 const cloud = JSON.parse(atob(fileInfo.content));
                 
-                // SAFETY CHECK: Only overwrite if cloud data is newer
                 const localLastSync = parseInt(localStorage.getItem('last_sync_time')) || 0;
                 const cloudLastSync = new Date(cloud.lastSync).getTime();
 
@@ -610,14 +615,23 @@
         }
 
         function renderPOS() {
-            const f = document.getElementById('foodGrid'); const d = document.getElementById('drinkGrid');
+            const f = document.getElementById('foodGrid'); 
+            const d = document.getElementById('drinkGrid');
+            const searchInput = document.getElementById('pos-search');
+            const query = searchInput ? searchInput.value.toUpperCase() : "";
+            
             f.innerHTML = ''; d.innerHTML = '';
+            
             Object.keys(inventory).forEach(key => {
                 if(inventory[key].category === 'ingredient') return;
+                
+                if (query && !inventory[key].name.toUpperCase().includes(query)) return;
+
                 const btn = document.createElement('div'); btn.className = `product-btn ${inventory[key].category}-btn`;
                 btn.innerHTML = `<div style="width:100%" onclick="addToCart('${key}')"><b>${inventory[key].name}</b><br>R${inventory[key].price.toFixed(2)}</div>`;
                 inventory[key].category === 'food' ? f.appendChild(btn) : d.appendChild(btn);
             });
+            
             const tTabs = document.getElementById('trans-tabs'); tTabs.innerHTML = '';
             transactions.forEach((t, i) => {
                 if(t.status !== 'active') return;
