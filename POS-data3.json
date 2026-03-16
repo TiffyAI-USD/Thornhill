@@ -13,13 +13,57 @@
       "cost": 0,
       "category": "drink",
       "stock": 0
+    },
+    "P_1773685021513": {
+      "name": "STONEY",
+      "price": 15,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773685112958": {
+      "name": "SPRITE",
+      "price": 15,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773685215299": {
+      "name": "LUCKY CLUB",
+      "price": 70,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773685217569": {
+      "name": "LUCKY CLUB",
+      "price": 70,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773685367675": {
+      "name": "SO DAZE SODA",
+      "price": 60,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
     }
   },
   "recipes": {},
   "transactions": [
     {
       "id": 1,
-      "items": [],
+      "items": [
+        {
+          "name": "COCA-COLA ",
+          "price": 15,
+          "cost": 0,
+          "category": "drink",
+          "stock": -1,
+          "code": "P_1773649938484"
+        }
+      ],
       "status": "active",
       "date": 1773648846248
     }
@@ -34,5 +78,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-16T18:15:05.194Z"
+  "lastSync": "2026-03-16T18:22:59.159Z"
 }
