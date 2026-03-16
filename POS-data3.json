@@ -1,15 +1,32 @@
 {
-  "inventory": {},
+  "inventory": {
+    "P_1773649938484": {
+      "name": "COCA-COLA ",
+      "price": 15,
+      "cost": 0,
+      "category": "drink",
+      "stock": 0
+    }
+  },
   "recipes": {},
   "transactions": [
     {
       "id": 1,
-      "items": [],
+      "items": [
+        {
+          "name": "COCA-COLA ",
+          "price": 15,
+          "cost": 0,
+          "category": "drink",
+          "stock": 0,
+          "code": "P_1773649938484"
+        }
+      ],
       "status": "active",
       "date": 1773648846248
     }
   ],
   "purchaseLog": [],
   "staffSales": {},
-  "lastSync": "2026-03-16T08:14:26.333Z"
+  "lastSync": "2026-03-16T08:32:29.489Z"
 }
