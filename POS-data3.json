@@ -5,7 +5,7 @@
       "price": 15,
       "cost": 0,
       "category": "drink",
-      "stock": 0
+      "stock": -1
     }
   },
   "recipes": {},
@@ -24,9 +24,23 @@
       ],
       "status": "active",
       "date": 1773648846248
+    },
+    {
+      "id": 2,
+      "items": [],
+      "status": "active",
+      "date": 1773649965396
     }
   ],
   "purchaseLog": [],
-  "staffSales": {},
-  "lastSync": "2026-03-16T08:32:29.489Z"
+  "staffSales": {
+    "Jonice": [
+      {
+        "name": "COCA-COLA ",
+        "price": 15,
+        "date": 1773649959460
+      }
+    ]
+  },
+  "lastSync": "2026-03-16T08:32:45.394Z"
 }
