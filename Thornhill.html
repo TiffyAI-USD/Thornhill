@@ -358,7 +358,7 @@
         let pinStr = "";
         let currentUser = "";
         const ADMIN_PIN = "1010";
-        const STAFF_PINS = {"1010": "Sean", "7711": "Cats", "7777": "King Ron", "2266": "Local", "2255": "Jay", "2244": "Ben", "2233": "Lim", "2211": "Andisiwe", "1199": "Lungile", "1188": "Jon", "1177": "Megan", "1166": "Sweswe", "1155": "Siyamcela", "1144": "Luciano", "1133": "Tyran", "1122": "Sive", "2020": "Zuko", "1999": "Lee", "1992": "Jonice", "1234": "Beranise", "1111": "Momo", "2222": "Zet", "3333": "Marshall", "4444": "Hans", "2015": "Regan", "5555": "Don"};
+        const STAFF_PINS = {"1010": "Sean", "7711": "Cats", "7777": "King Ron", "2266": "Local", "2255": "Jay", "2244": "Ben", "2233": "Lim", "2211": "Andisiwe", "1199": "Lungile", "1188": "Jon", "1177": "Megan", "1166": "Sweswe", "1155": "Siyamcela", "1144": "Luciano", "1133": "Tyran", "1122": "Sive", "2020": "Zuko", "1999": "Lee", "1992": "Jonice", "1234": "Beranise", "1111": "Momo", "2222": "Zet", "1529": "Marshall", "4444": "Hans", "2015": "Regan", "5555": "Don"};
 
         function pP(n) { if(pinStr.length < 4) { pinStr += n; document.getElementById('pin-screen').textContent = "*".repeat(pinStr.length); } }
         function cP() { pinStr = ""; document.getElementById('pin-screen').textContent = "****"; playSnd('snd-click'); }
