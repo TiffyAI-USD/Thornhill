@@ -12,7 +12,7 @@
       "price": 15,
       "cost": 0,
       "category": "drink",
-      "stock": 0
+      "stock": -1
     },
     "P_1773685021513": {
       "name": "STONEY",
@@ -66,6 +66,12 @@
       ],
       "status": "active",
       "date": 1773648846248
+    },
+    {
+      "id": 2,
+      "items": [],
+      "status": "active",
+      "date": 1773770259094
     }
   ],
   "purchaseLog": [],
@@ -76,7 +82,14 @@
         "price": 15,
         "date": 1773649959460
       }
+    ],
+    "Jon": [
+      {
+        "name": "FANTA",
+        "price": 15,
+        "date": 1773770256845
+      }
     ]
   },
-  "lastSync": "2026-03-17T17:57:24.339Z"
+  "lastSync": "2026-03-17T17:57:39.091Z"
 }
