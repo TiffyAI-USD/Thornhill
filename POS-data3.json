@@ -62,6 +62,13 @@
       "cost": 21.604166666666668,
       "price": 0,
       "category": "ingredient"
+    },
+    "BRUTAL_FRUIT_STRAWBERRY_ROUGE_500ML": {
+      "name": "BRUTAL FRUIT STRAWBERRY ROUGE 500ML",
+      "stock": 48,
+      "cost": 16.625,
+      "price": 0,
+      "category": "ingredient"
     }
   },
   "recipes": {},
@@ -93,6 +100,13 @@
       "qty": 48,
       "cost": 1037,
       "cat": "Drink"
+    },
+    {
+      "date": 1773992077518,
+      "name": "BRUTAL FRUIT STRAWBERRY ROUGE 500ML",
+      "qty": 48,
+      "cost": 798,
+      "cat": "Drink"
     }
   ],
   "staffSales": {
@@ -111,5 +125,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T07:30:31.901Z"
+  "lastSync": "2026-03-20T07:34:37.531Z"
 }
