@@ -160,6 +160,13 @@
       "cost": 9.86,
       "category": "drink",
       "stock": 172
+    },
+    "P_1773998045919": {
+      "name": "DESIGNER WATER 500ML",
+      "price": 10,
+      "cost": 8.46,
+      "category": "drink",
+      "stock": 0
     }
   },
   "recipes": {},
@@ -223,5 +230,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T09:06:39.229Z"
+  "lastSync": "2026-03-20T09:14:05.922Z"
 }
