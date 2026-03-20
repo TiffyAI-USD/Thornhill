@@ -110,16 +110,7 @@
   "transactions": [
     {
       "id": 1,
-      "items": [
-        {
-          "name": "SPRITE",
-          "price": 15,
-          "cost": 0,
-          "category": "drink",
-          "stock": 0,
-          "code": "P_1773685112958"
-        }
-      ],
+      "items": [],
       "status": "active",
       "date": 1773648846248
     },
@@ -169,5 +160,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T08:13:34.707Z"
+  "lastSync": "2026-03-20T08:13:37.620Z"
 }
