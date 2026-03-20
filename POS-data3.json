@@ -142,7 +142,7 @@
     },
     "REFRESH": {
       "name": "REFRESH",
-      "stock": 120,
+      "stock": 480,
       "cost": 9.665,
       "price": 0,
       "category": "ingredient"
@@ -209,5 +209,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T08:30:53.874Z"
+  "lastSync": "2026-03-20T08:31:43.731Z"
 }
