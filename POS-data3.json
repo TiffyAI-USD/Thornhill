@@ -97,13 +97,29 @@
       "cost": 7.16,
       "category": "drink",
       "stock": 48
+    },
+    "P_1773994390650": {
+      "name": "COCA-COLA ",
+      "price": 15,
+      "cost": 10.41,
+      "category": "drink",
+      "stock": 0
     }
   },
   "recipes": {},
   "transactions": [
     {
       "id": 1,
-      "items": [],
+      "items": [
+        {
+          "name": "SPRITE",
+          "price": 15,
+          "cost": 0,
+          "category": "drink",
+          "stock": 0,
+          "code": "P_1773685112958"
+        }
+      ],
       "status": "active",
       "date": 1773648846248
     },
@@ -153,5 +169,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T08:11:55.925Z"
+  "lastSync": "2026-03-20T08:13:34.707Z"
 }
