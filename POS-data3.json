@@ -55,6 +55,13 @@
       "cost": 16.687083333333334,
       "price": 0,
       "category": "ingredient"
+    },
+    "BACARDI_WATERMELON_BREEZER_500ML_CAN": {
+      "name": "BACARDI WATERMELON BREEZER 500ML CAN",
+      "stock": 48,
+      "cost": 21.604166666666668,
+      "price": 0,
+      "category": "ingredient"
     }
   },
   "recipes": {},
@@ -79,6 +86,13 @@
       "qty": 48,
       "cost": 800.98,
       "cat": "Drink "
+    },
+    {
+      "date": 1773991831898,
+      "name": "BACARDI WATERMELON BREEZER 500ML CAN",
+      "qty": 48,
+      "cost": 1037,
+      "cat": "Drink"
     }
   ],
   "staffSales": {
@@ -97,5 +111,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T07:28:36.698Z"
+  "lastSync": "2026-03-20T07:30:31.901Z"
 }
