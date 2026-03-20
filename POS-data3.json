@@ -118,6 +118,34 @@
       "cost": 10.41,
       "category": "drink",
       "stock": 0
+    },
+    "P_1773995252873": {
+      "name": "LIQUIFRUIT ",
+      "price": 15,
+      "cost": 11.71,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773995301353": {
+      "name": "POWERADE",
+      "price": 15,
+      "cost": 12.29,
+      "category": "drink",
+      "stock": 0
+    },
+    "P_1773995337711": {
+      "name": "REDBULL",
+      "price": 20,
+      "cost": 15.23,
+      "category": "drink",
+      "stock": 0
+    },
+    "REFRESH": {
+      "name": "REFRESH",
+      "stock": 120,
+      "cost": 9.665,
+      "price": 0,
+      "category": "ingredient"
     }
   },
   "recipes": {},
@@ -156,6 +184,13 @@
       "qty": 48,
       "cost": 798,
       "cat": "Drink"
+    },
+    {
+      "date": 1773995453869,
+      "name": "REFRESH",
+      "qty": 120,
+      "cost": 1159.8,
+      "cat": "General"
     }
   ],
   "staffSales": {
@@ -174,5 +209,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T08:25:11.424Z"
+  "lastSync": "2026-03-20T08:30:53.874Z"
 }
