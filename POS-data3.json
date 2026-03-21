@@ -1,54 +1,5 @@
 {
   "inventory": {
-    "P_1773649938484": {
-      "name": "COCA-COLA ",
-      "price": 15,
-      "cost": 0,
-      "category": "drink",
-      "stock": -1
-    },
-    "P_1773684905188": {
-      "name": "FANTA",
-      "price": 15,
-      "cost": 0,
-      "category": "drink",
-      "stock": -1
-    },
-    "P_1773685021513": {
-      "name": "STONEY",
-      "price": 15,
-      "cost": 0,
-      "category": "drink",
-      "stock": 0
-    },
-    "P_1773685112958": {
-      "name": "SPRITE",
-      "price": 15,
-      "cost": 0,
-      "category": "drink",
-      "stock": 0
-    },
-    "P_1773685215299": {
-      "name": "LUCKY CLUB",
-      "price": 70,
-      "cost": 0,
-      "category": "drink",
-      "stock": 0
-    },
-    "P_1773685217569": {
-      "name": "LUCKY CLUB",
-      "price": 70,
-      "cost": 0,
-      "category": "drink",
-      "stock": 0
-    },
-    "P_1773685367675": {
-      "name": "SO DAZE SODA",
-      "price": 60,
-      "cost": 0,
-      "category": "drink",
-      "stock": 0
-    },
     "BACARDI_WATERMELON_BREEZER": {
       "name": "BACARDI WATERMELON BREEZER",
       "stock": 48,
@@ -76,20 +27,6 @@
       "cost": 34.5,
       "category": "drink",
       "stock": 47
-    },
-    "P_1773992321325": {
-      "name": "SO DAZE GUMMIES 200MG",
-      "price": 250,
-      "cost": 712.5,
-      "category": "food",
-      "stock": 30
-    },
-    "P_1773992664896": {
-      "name": "SO DAZE GUMMIES 100MG",
-      "price": 150,
-      "cost": 86.25,
-      "category": "food",
-      "stock": 20
     },
     "P_1773994230443": {
       "name": "AQUELLE FLAVOURED WATER ",
@@ -161,18 +98,18 @@
       "category": "drink",
       "stock": 172
     },
-    "P_1773998045919": {
-      "name": "DESIGNER WATER 500ML",
-      "price": 10,
-      "cost": 8.46,
+    "P_1774071535618": {
+      "name": "SO DAZE GUMMIES 100MG",
+      "price": 150,
+      "cost": 86.25,
       "category": "drink",
-      "stock": 0
+      "stock": 20
     },
-    "P_1773998116277": {
-      "name": "DESIGNER WATER 300ML",
-      "price": 8,
-      "cost": 7.7,
-      "category": "food",
+    "P_1774071599823": {
+      "name": "SO DAZE GUMMIES 200MG",
+      "price": 250,
+      "cost": 172.5,
+      "category": "drink",
       "stock": 0
     }
   },
@@ -189,6 +126,12 @@
       "items": [],
       "status": "active",
       "date": 1773770259094
+    },
+    {
+      "id": 3,
+      "items": [],
+      "status": "active",
+      "date": 1774069289858
     }
   ],
   "purchaseLog": [
@@ -237,5 +180,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-20T12:37:02.509Z"
+  "lastSync": "2026-03-21T05:41:13.517Z"
 }
