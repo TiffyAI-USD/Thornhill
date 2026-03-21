@@ -103,7 +103,7 @@
       "price": 150,
       "cost": 86.25,
       "category": "drink",
-      "stock": 20
+      "stock": 18
     },
     "P_1774071599823": {
       "name": "SO DAZE GUMMIES 200MG",
@@ -180,5 +180,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-21T05:41:33.655Z"
+  "lastSync": "2026-03-21T05:44:30.160Z"
 }
