@@ -26,7 +26,7 @@
       "price": 60,
       "cost": 34.5,
       "category": "drink",
-      "stock": 47
+      "stock": 143
     },
     "P_1773994230443": {
       "name": "AQUELLE FLAVOURED WATER ",
@@ -97,20 +97,6 @@
       "cost": 9.86,
       "category": "drink",
       "stock": 172
-    },
-    "P_1774071535618": {
-      "name": "SO DAZE GUMMIES 100MG",
-      "price": 150,
-      "cost": 86.25,
-      "category": "drink",
-      "stock": 18
-    },
-    "P_1774071599823": {
-      "name": "SO DAZE GUMMIES 200MG",
-      "price": 250,
-      "cost": 172.5,
-      "category": "drink",
-      "stock": 30
     }
   },
   "recipes": {},
@@ -126,12 +112,6 @@
       "items": [],
       "status": "active",
       "date": 1773770259094
-    },
-    {
-      "id": 3,
-      "items": [],
-      "status": "active",
-      "date": 1774069289858
     }
   ],
   "purchaseLog": [
@@ -180,5 +160,5 @@
       }
     ]
   },
-  "lastSync": "2026-03-21T05:44:30.160Z"
+  "lastSync": "2026-03-21T05:47:48.652Z"
 }
